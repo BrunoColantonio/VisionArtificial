@@ -1,14 +1,10 @@
 import cv2
+import numpy as np
 
-"""
-----TAGS----
-1. Cuadrado
-2. Triangulo
-3. Circulo
+GREEN = (0,255,0)
 
-"""
 frameWidth = 640
-frameHeight = 480 
+frameHeight = 480
 cam = cv2.VideoCapture(0)
 cam.set(3, frameWidth)
 cam.set(4, frameHeight)
@@ -24,144 +20,9 @@ cv2.createTrackbar("Distancia","Parametros",20,100,empty)
 cv2.createTrackbar("Area","Parametros",500,10000,empty)
 
 #Refernce dictionary
-references = {}
-
-
-print("HU -> 1) CUADRADO")
-# ----------- PRIMER CUADRADO -------------
-
-#Load image
-square = cv2.imread("./shapes/cuadrado.jpg")
-#Convert to binary
-gray_square = cv2.cvtColor(square, cv2.COLOR_BGR2GRAY)
-binary_square = cv2.threshold(gray_square,150,255,0)[1]
-#Get contours
-sq_contours, sq_hierachy = cv2.findContours(binary_square, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = sq_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-# ----------- SEGUNDO CUADRADO -------------
-
-#Load image
-square = cv2.imread("./shapes/cuadrado2.png")
-#Convert to binary
-gray_square = cv2.cvtColor(square, cv2.COLOR_BGR2GRAY)
-binary_square = cv2.threshold(gray_square,150,255,0)[1]
-#Get contours
-sq_contours, sq_hierachy = cv2.findContours(binary_square, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = sq_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-# ----------- TERCER CUADRADO -------------
-
-#Load image
-square = cv2.imread("./shapes/cuadrado3.png")
-#Convert to binary
-gray_square = cv2.cvtColor(square, cv2.COLOR_BGR2GRAY)
-binary_square = cv2.threshold(gray_square,150,255,0)[1]
-#Get contours
-sq_contours, sq_hierachy = cv2.findContours(binary_square, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = sq_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-# ----------- PRIMER TRIANGULO -------------
-print("HU -> 2) TRIANGULO")
-#Load image
-traingle = cv2.imread("./shapes/triangulo.png")
-#Convert to binary
-gray_traingle = cv2.cvtColor(traingle, cv2.COLOR_BGR2GRAY)
-binary_traingle = cv2.threshold(gray_traingle,150,255,0)[1]
-#Get contours
-triangle_contours, sq_hierachy = cv2.findContours(binary_traingle, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = triangle_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-# ----------- SEGUNDO TRIANGULO -------------
-
-#Load image
-traingle = cv2.imread("./shapes/triangulo2.png")
-#Convert to binary
-gray_traingle = cv2.cvtColor(traingle, cv2.COLOR_BGR2GRAY)
-binary_traingle = cv2.threshold(gray_traingle,150,255,0)[1]
-#Get contours
-triangle_contours, _ = cv2.findContours(binary_traingle, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = triangle_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-# ----------- TERCER TRIANGULO -------------
-
-#Load image
-traingle = cv2.imread("./shapes/triangulo3.png")
-#Convert to binary
-gray_traingle = cv2.cvtColor(traingle, cv2.COLOR_BGR2GRAY)
-binary_traingle = cv2.threshold(gray_traingle,150,255,0)[1]
-#Get contours
-triangle_contours, _ = cv2.findContours(binary_traingle, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = triangle_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-# ----------- PRIMER CIRCULO -------------
-print("HU -> 2) CIRCULO")
-#Load image
-circle = cv2.imread("./shapes/circulo.jpg")
-#Convert to binary
-gray_circle = cv2.cvtColor(circle, cv2.COLOR_BGR2GRAY)
-binary_circle = cv2.threshold(gray_circle,150,255,0)[1]
-#Get contours
-circle_contours, _ = cv2.findContours(binary_circle, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = circle_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-# ----------- SEGUNDO CIRCULO -------------
-
-#Load image
-circle = cv2.imread("./shapes/circulo2.jpg")
-#Convert to binary
-gray_circle = cv2.cvtColor(circle, cv2.COLOR_BGR2GRAY)
-binary_circle = cv2.threshold(gray_circle,150,255,0)[1]
-#Get contours
-circle_contours, _ = cv2.findContours(binary_circle, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = circle_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-# ----------- TERCER CIRCULO -------------
-
-#Load image
-circle = cv2.imread("./shapes/circulo3.png")
-#Convert to binary
-gray_circle = cv2.cvtColor(circle, cv2.COLOR_BGR2GRAY)
-binary_circle = cv2.threshold(gray_circle,150,255,0)[1]
-#Get contours
-circle_contours, _ = cv2.findContours(binary_circle, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-cnt = circle_contours[0]
-#Get Hu Moments
-moments = cv2.moments(cnt)
-hu_moments = cv2.HuMoments(moments)
-print(hu_moments)
-
-"""
+references = {'1': "Cuadrado",
+              '2': "Circulo",
+              '3': "Triangulo"}
 
 ##Funcion para apilar las ventanas:
 def stackImages(scale,imgArray):
@@ -195,100 +56,84 @@ def stackImages(scale,imgArray):
         ver = hor
     return ver
 
-def get_contours(img,img_contour,param_area):
-
-    contours, hierachy = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-    
-
-    for i, cont in enumerate(contours):
-        #Para que NO marque el primer contorno (toda la imagen)
-        if i == 0:
-            continue
-
-        #Reduzco el ruido mediante el area (elimino contornos pequeños)
-        area = cv2.contourArea(cont)
-        print(f'Contorno {i} con area {area}. Limite en {param_area}')
-        if area >= param_area:
-            perimeter = cv2.arcLength(cont, True)
-            aprox = cv2.approxPolyDP(cont, 0.02*perimeter, True)
-            cv2.drawContours(img_contour, contours,-1,(0,255,0),7)
-
-            x,y,w,h = cv2.boundingRect(aprox)
-            x_mid = int(x + w/3)
-            y_mid = int(y + h/1.5)
-
-            coords = (x_mid,y_mid)
-            colour = (0,0,0)
-
 def process_img(img, threshold1, match_dist, min_area):
     #La convierto a gris
-    img_blur = cv2.GaussianBlur(img, (7,7), 1)
-    img_gray = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     #La convierto a binaria
-    _, img_binary = cv2.threshold(img_gray, threshold1,255,cv2.THRESH_BINARY)
+    _, img_binary = cv2.threshold(img_gray, threshold1,255,cv2.THRESH_BINARY_INV)
 
     # Operación morfológica
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    #kernel = np.ones((5, 5), np.uint8)
+    img_binary = cv2.morphologyEx(img_binary, cv2.MORPH_OPEN, kernel)
     img_binary = cv2.morphologyEx(img_binary, cv2.MORPH_CLOSE, kernel)
 
     #Contornos
     contours, _ = cv2.findContours(img_binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    #Para cada contorno detectado
+    #Valido los contornos
+    valid_contours = []
     for c in contours:
         area = cv2.contourArea(c)
-        if area < min_area:
-            continue
+        if area > min_area:
+            valid_contours.append(c)
 
-        x, y, w, h = cv2.boundingRect(c)
-        best_match = None
-        best_dist = float("inf")
+    #Dibujo contornos validos
+    cv2.drawContours(img, valid_contours, -1, GREEN, 2)
 
-        for name, cont in references.items():
-            dist = cv2.matchShapes(c, cont, cv2.CONTOURS_MATCH_I1, 0.0)
-            if dist < best_dist:
-                best_dist = dist
-                best_match = name
+    return img, img_binary, valid_contours
 
-        color = (0, 0, 255)  # rojo por defecto (desconocido)
-        label = "Desconocido"
+#Open result txt file
+try:
+    with open ("hu_moments.txt","w") as file:
 
-        if best_dist < match_dist:
-            color = (0, 255, 0)  # verde si es conocido
-            label = best_match
+        tags = []
+        while True:
+            
+            #Obtener parametros
+            threshold1 = cv2.getTrackbarPos("Umbral","Parametros")
+            match_dist = cv2.getTrackbarPos("Distancia","Parametros") / 100.0
+            min_area = cv2.getTrackbarPos("Area","Parametros")
 
-        cv2.drawContours(img, [c], -1, color, 2)
-        cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+            #Obtengo imagen de webcam
+            success, img = cam.read()
+            img_contour = img.copy()
 
-    return img, img_binary
+            #Proceso el frame
+            result, img_binary, contours = process_img(img.copy(),threshold1,match_dist,min_area)
 
-    
-while True:
-    #Obtener parametros
-    threshold1 = cv2.getTrackbarPos("Umbral","Parametros")
-    match_dist = cv2.getTrackbarPos("Distancia","Parametros") / 100.0
-    min_area = cv2.getTrackbarPos("Area","Parametros")
+            #Muestro las imagenes
+            cv2.imshow("Binaria", img_binary)
+            cv2.imshow("Resultado", result)
 
-    #Obtengo imagen de webcam
-    success, img = cam.read()
-    img_contour = img.copy()
+            #Detecto teclas
+            key = cv2.waitKey(30) & 0xFF
+            if key in [ord('1'),ord('2'),ord('3')]:
+                #Acepto como valido si solo se hay un contorno detectado
+                if len(contours) != 1:
+                    print("Error: Hay mas de un contorno y debe haber solo uno.")
+                else:
+                    print(f"{references[chr(key)]} detectado")
+                    tags.append(chr(key))
+                    #Obtengo Hu Moments
+                    moments = cv2.moments(contours[0])
+                    hu_moments = cv2.HuMoments(moments)
+                    #Guardo Hu en un array para luego escribirlo en el txt resultado 
+                    hu_arr = "["
+                    for i in hu_moments:
+                        hu_arr += f"{i[0]},"
+                            
+                    file.write(f"{hu_arr[:-1]}],\n")
 
-    
-    #Proceso el frame
-    result, img_binary = process_img(img.copy(),threshold1,match_dist,min_area)
-
-
-    #img_canny = cv2.Canny(img_gray,threshold1,threshold2)
-
-
-
-    #get_contours(img_dil,img_contour,area)
-    stack = stackImages(0.8,([img,img_binary,result]))
-    cv2.imshow("Resultado",stack)
-
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-        
-        """
+            if key == ord('q'):
+                #Finalmente escribo en el txt final las etiquetas correspondientes a cada deteccion
+                file.write("[")
+                for tag in tags:
+                    file.write(f"{tag},")
+                
+                file.write("]")
+                print("Saliendo")
+                break
+except Exception as e:
+    print(e)

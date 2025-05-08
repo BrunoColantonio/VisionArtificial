@@ -3,7 +3,7 @@ import numpy as np
 from joblib import load
 import sklearn as sk
 
-
+GREEN = (0,255,0)
 
 """
 ----TAGS----
@@ -35,8 +35,8 @@ cv2.createTrackbar("Area","Parametros",500,10000,empty)
 
 #Refernce dictionary
 references = {1: 'Cuadrado',
-              2: 'Triangulo',
-              3: 'Circulo'}
+              2: 'Circulo',
+              3: 'Triangulo'}
 
 ##Funcion para apilar las ventanas:
 def stackImages(scale,imgArray):
@@ -70,95 +70,46 @@ def stackImages(scale,imgArray):
         ver = hor
     return ver
 
-def get_contours(img,img_contour,param_area):
-
-    contours, hierachy = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-    
-
-    for i, cont in enumerate(contours):
-        #Para que NO marque el primer contorno (toda la imagen)
-        if i == 0:
-            continue
-
-        #Reduzco el ruido mediante el area (elimino contornos pequeños)
-        area = cv2.contourArea(cont)
-        print(f'Contorno {i} con area {area}. Limite en {param_area}')
-        if area >= param_area:
-            perimeter = cv2.arcLength(cont, True)
-            aprox = cv2.approxPolyDP(cont, 0.02*perimeter, True)
-            cv2.drawContours(img_contour, contours,-1,(0,255,0),7)
-
-            x,y,w,h = cv2.boundingRect(aprox)
-            x_mid = int(x + w/3)
-            y_mid = int(y + h/1.5)
-
-            coords = (x_mid,y_mid)
-            colour = (0,0,0)
-
 def process_img(img, threshold1, match_dist, min_area):
     #La convierto a gris
-    img_blur = cv2.GaussianBlur(img, (7,7), 1)
-    img_gray = cv2.cvtColor(img_blur, cv2.COLOR_BGR2GRAY)
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     #La convierto a binaria
-    _, img_binary = cv2.threshold(img_gray, threshold1,255,cv2.THRESH_BINARY)
+    _, img_binary = cv2.threshold(img_gray, threshold1,255,cv2.THRESH_BINARY_INV)
 
     # Operación morfológica
-    kernel = np.ones((5, 5), np.uint8)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+    #kernel = np.ones((5, 5), np.uint8)
+    img_binary = cv2.morphologyEx(img_binary, cv2.MORPH_OPEN, kernel)
     img_binary = cv2.morphologyEx(img_binary, cv2.MORPH_CLOSE, kernel)
 
-    #Contornos
-    contours, _ = cv2.findContours(img_binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    #Hallo ontornos
+    contours, _ = cv2.findContours(img_binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    #Para cada contorno detectado
+    #Valido los contornos respecto al area
+    valid_contours = []
     for c in contours:
         area = cv2.contourArea(c)
-        if area < min_area:
-            continue
+        if area > min_area:
+            valid_contours.append(c)
 
-        #Pedict
-        #Get Hu Moments
+    #Dibujo contornos
+    cv2.drawContours(img, valid_contours, -1, GREEN, 2)
+
+    #Para cada contorno detectado
+    for c in valid_contours:
+        #Obtener Hu Moments
         moments = cv2.moments(c)
-        hu_aux = cv2.HuMoments(moments)
-        hu_moments = []
-        for i in hu_aux:
-            hu_moments.append(i[0])
-
-        predicted_tag = clasificator.predict([hu_moments])
-        color = (0, 255, 0)  # verde si es conocido
-
-        print(predicted_tag[0])
-        label = references[predicted_tag[0]]
-        #Draw contours
-        x, y, w, h = cv2.boundingRect(c)
-        cv2.drawContours(img, [c], -1, color, 2)
-        cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
-    return img, img_binary
-
-"""
-        x, y, w, h = cv2.boundingRect(c)
-        best_match = None
-        best_dist = float("inf")
-
-        for name, cont in references.items():
-            dist = cv2.matchShapes(c, cont, cv2.CONTOURS_MATCH_I1, 0.0)
-            if dist < best_dist:
-                best_dist = dist
-                best_match = name
-
-        color = (0, 0, 255)  # rojo por defecto (desconocido)
-        label = "Desconocido"
-
-        if best_dist < match_dist:
-            color = (0, 255, 0)  # verde si es conocido
-            label = best_match
-
-
-        cv2.drawContours(img, [c], -1, color, 2)
-        cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
-"""
+        hu_moments = cv2.HuMoments(moments)
         
-    #return img, img_binary
+        #Predecir
+        predicted_tag = clasificator.predict(hu_moments.flatten().reshape(1, -1))
+        label = references[predicted_tag[0]]
+
+        #Escribir prediccion
+        x, y, w, h = cv2.boundingRect(c)
+        cv2.putText(img, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, GREEN, 2)
+    return img, img_binary
 
 while True:
     #Obtener parametros
@@ -168,13 +119,11 @@ while True:
 
     #Obtengo imagen de webcam
     success, img = cam.read()
-    #img_contour = img.copy()
 
-    
     #Proceso el frame
     result, img_binary = process_img(img.copy(),threshold1,match_dist,min_area)
 
-    #get_contours(img_dil,img_contour,area)
+    #Muestro las ventanas juntas
     stack = stackImages(0.8,([img,img_binary,result]))
     cv2.imshow("Resultado",stack)
 
