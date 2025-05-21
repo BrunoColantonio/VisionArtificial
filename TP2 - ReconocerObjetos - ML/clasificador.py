@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from joblib import load
-import sklearn as sk
+#from joblib import load
+#import sklearn as sk
 
 GREEN = (0,255,0)
 
@@ -13,7 +13,7 @@ GREEN = (0,255,0)
 
 """
 # load model
-clasificator = load('shapes_model.joblib') 
+#clasificator = load('shapes_model.joblib') 
 
 
 frameWidth = 640
@@ -103,8 +103,9 @@ def process_img(img, threshold1, match_dist, min_area):
         hu_moments = cv2.HuMoments(moments)
         
         #Predecir
-        predicted_tag = clasificator.predict(hu_moments.flatten().reshape(1, -1))
-        label = references[predicted_tag[0]]
+        #predicted_tag = clasificator.predict(hu_moments.flatten().reshape(1, -1))
+        #label = references[predicted_tag[0]]
+        label = "Cuadrado"
 
         #Escribir prediccion
         x, y, w, h = cv2.boundingRect(c)

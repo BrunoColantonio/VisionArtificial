@@ -49,8 +49,8 @@ clasificator = tree.DecisionTreeClassifier(criterion="entropy",max_depth=2,min_s
 clasificator.fit(X_train, y_train)
 y_pred = clasificator.predict(X_test)
 
-accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy: {accuracy}')
+#accuracy = accuracy_score(y_test, y_pred)
+#print(f'Accuracy: {accuracy}')
 
 # Save model
 dump(clasificator, 'shapes_model.joblib')
