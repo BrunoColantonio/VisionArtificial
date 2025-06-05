@@ -15,12 +15,12 @@ screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
 
 #Comment when using mouse
-frameWidth = 1280
-frameHeight = 720
+# frameWidth = 1280
+# frameHeight = 720
 
 #Uncomment to use mouse
-# frameWidth = 1920
-# frameHeight = 1080
+frameWidth = 1920
+frameHeight = 1080
 
 frame_reduction = 100
 smoothening = 7
@@ -249,11 +249,11 @@ while True:
                                 elif(key.text == "(X)"):
 
                                     #Uncomment to use mouse
-                                    # show_keyboard = not show_keyboard
+                                    show_keyboard = not show_keyboard
 
                                     #Comment when use mouse
-                                    cam.release()
-                                    cv2.destroyAllWindows()
+                                    # cam.release()
+                                    # cv2.destroyAllWindows()
                                 else:
                                     keyboard.press(key.text)
                                     finalText += key.text

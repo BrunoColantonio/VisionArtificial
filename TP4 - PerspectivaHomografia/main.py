@@ -68,6 +68,7 @@ def main():
 
     while True:
         ret, frame = cap.read()
+        frame = cv.flip(frame,1)
         if not ret:
             break
 
