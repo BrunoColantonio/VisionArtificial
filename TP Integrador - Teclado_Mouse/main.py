@@ -16,7 +16,7 @@ screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 frameWidth = 1920
 frameHeight = 1080
 
-smoothening = 12
+smoothening = 15
 
 SHOW_KEYBOARD_BTN_X = 650
 SHOW_KEYBOARD_BTN_Y = 5
@@ -130,6 +130,7 @@ def checkMouse(index_x_pos,index_y_pos,middle_x_pos,middle_y_pos,plocX,plocY):
         distance = math.hypot((index_x_pos-middle_x_pos), (index_y_pos-middle_y_pos))
         if(distance < 60):
              mouse.click("left")
+             sleep(0.3)
 
         return plocX,plocY
 
@@ -268,7 +269,8 @@ while True:
                     did_gesture = False
                 
                 checkSwapTabs(wrist_history)
-
+            else:
+                wrist_history.clear()
 
             if(show_keyboard == False):
                 PLOCX,PLOCY = checkMouse(index_tip_x_pos,index_tip_y_pos,middle_tip_x_pos,middle_tip_y_pos,PLOCX,PLOCY)
