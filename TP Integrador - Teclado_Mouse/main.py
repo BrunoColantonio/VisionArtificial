@@ -7,7 +7,6 @@ from time import sleep
 import ctypes
 import collections
 import time
-
 import mouse
 
 user32 = ctypes.windll.user32
@@ -17,9 +16,7 @@ screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 frameWidth = 1920
 frameHeight = 1080
 
-frame_reduction = 100
 smoothening = 12
-
 
 SHOW_KEYBOARD_BTN_X = 650
 SHOW_KEYBOARD_BTN_Y = 5
@@ -41,16 +38,16 @@ show_keyboard = True
 
 # Global variables to control frame ignoration
 ignore_frame = False
-frames_to_ignore = 5
 
 # Globals to control tab switch
-SWIPE_THRESHOLD = 400  # pixels
+SWIPE_THRESHOLD = 300  # pixels
 COOLDOWN_TIME = 1.0  # seconds
 last_swipe_time = 0 
 
 # Global wrist history arr
 wrist_history = collections.deque(maxlen=10)
 
+# Object to controll keyboard
 keyboard = Controller()
 
 
@@ -84,7 +81,6 @@ def cornerRect(img, bbox, l=30, t=5, rt=1,
     cv2.line(img, (x1, y1), (x1, y1 - l), colorC, t)
 
     return img
-
 
 def drawAll(img, buttonList):
     imgNew = np.zeros_like(img, np.uint8)
@@ -155,7 +151,6 @@ def checkMultiDesktop(index_tip_x_pos,index_tip_y_pos,thumb_tip_x_pos,thumb_tip_
 
 def checkSwapTabs(wrist_history):
     global show_keyboard
-    global frames_to_ignore
     global ignore_frame
     global last_swipe_time
 
@@ -182,6 +177,13 @@ def isOverKeyboardBtn(middle_tip_x_pos,middle_tip_y_pos):
     else:
         return False
 
+def isOverKey(middle_tip_x_pos, middle_tip_y_pos, x, y, w, h):
+    if(x < middle_tip_x_pos  and middle_tip_x_pos < x+w 
+       and y < middle_tip_y_pos  and middle_tip_y_pos < y+h):
+        return True
+    else:
+        return False
+
 class Key():
     def __init__(self, pos, text, size=[65, 65]):
         self.pos = pos
@@ -190,7 +192,6 @@ class Key():
 
 
 # -------------------> MAIN <----------------------
-
 
 keyList = []
 for i in range(len(keys)):
@@ -240,7 +241,7 @@ while True:
             middle_tip_x_pos = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x * frameWidth
             middle_tip_y_pos = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y * frameHeight
 
-            # Get middle tip
+            # Get thumb tip
             thumb_tip_x_pos = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x * frameWidth
             thumb_tip_y_pos = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y * frameHeight
 
@@ -264,7 +265,7 @@ while True:
                 did_gesture = checkMultiDesktop(index_tip_x_pos,index_tip_y_pos,thumb_tip_x_pos,thumb_tip_y_pos)
                 if did_gesture:
                     wrist_history.clear()
-                    did_gesture = not did_gesture
+                    did_gesture = False
                 
                 checkSwapTabs(wrist_history)
 
@@ -278,20 +279,15 @@ while True:
                     show_keyboard = True
                     ignore_frame = True
                     wrist_history.clear()
-
-                    # cv2.rectangle(frame, key.pos, (SHOW_KEYBOARD_BTN_X + 65, SHOW_KEYBOARD_BTN_Y + 65), (30, 144, 255), cv2.FILLED)
-                    # cv2.putText(frame, key.text, (SHOW_KEYBOARD_BTN_X + 20, SHOW_KEYBOARD_BTN_Y + 65),
-                    #             cv2.FONT_HERSHEY_PLAIN, 4, (0, 0, 0), 4)
+                    
                     sleep(0.50)
             else:
                 for key in keyList:
                     x,y = key.pos
                     w,h = key.size
 
-
                     distance = math.hypot((middle_tip_x_pos-index_tip_x_pos), (middle_tip_y_pos-index_tip_y_pos))
-                    if(x < middle_tip_x_pos  and middle_tip_x_pos < x+w
-                    and y < middle_tip_y_pos  and middle_tip_y_pos < y+h):
+                    if(isOverKey(middle_tip_x_pos, middle_tip_y_pos, x, y, w, h)):
                             cv2.rectangle(frame, (x - 5, y - 5), (x + w + 5, y + h + 5), (30, 144, 255), cv2.FILLED)
                             if(key.text in ("<-","->","(X)")):
                                 cv2.putText(frame, key.text, (x, y+40),cv2.FONT_HERSHEY_PLAIN, 3, (0, 0, 0), 4)
